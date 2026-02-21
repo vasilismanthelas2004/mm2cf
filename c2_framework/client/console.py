@@ -1,6 +1,6 @@
 import cmd
 import requests
-
+#newew
 SERVER_URL = "http://127.0.0.1:5000"
 HEADERS = {"Authorization": "Bearer super_secret_c2_token_2026"}
 
@@ -62,4 +62,5 @@ class OperatorConsole(cmd.Cmd):
         return True
 
 if __name__ == '__main__':
+
     OperatorConsole().cmdloop()
