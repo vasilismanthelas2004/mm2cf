@@ -44,4 +44,6 @@ def beacon():
 
 if __name__ == "__main__":
     while not register(): time.sleep(5)
+
     beacon()
+
