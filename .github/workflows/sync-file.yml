@@ -1,0 +1,44 @@
+name: Sync File to All Branches
+
+on:
+  push:
+    branches:
+      - main  # Τρέχει μόνο όταν αλλάζεις κάτι στο main
+    paths:
+      - 'README.md' # Αντικατάστησε το με το αρχείο που θέλεις (π.χ. 'database.py')
+
+jobs:
+  sync-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Φέρνει όλα τα branches, όχι μόνο το main
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync and Push to all branches
+        run: |
+          FILE_TO_SYNC="README.md" # ΤΟ ΑΡΧΕΙΟ ΣΟΥ ΕΔΩ
+          
+          # Παίρνουμε όλα τα remote branches εκτός από το main και το HEAD
+          branches=$(git branch -r | grep -v '\->' | grep -v 'origin/main' | sed 's/origin\///')
+          
+          for branch in $branches; do
+            echo "Συγχρονισμός στο branch: $branch"
+            git checkout $branch
+            git checkout main -- $FILE_TO_SYNC
+            
+            # Έλεγχος αν υπάρχουν αλλαγές για να μην κολλήσει το commit
+            if [[ -n $(git status --porcelain) ]]; then
+              git add $FILE_TO_SYNC
+              git commit -m "Auto-sync $FILE_TO_SYNC from main"
+              git push origin $branch
+            else
+              echo "Δεν βρέθηκαν αλλαγές για το $branch"
+            fi
+          done
